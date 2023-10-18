@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using Photon.Pun;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -43,14 +44,18 @@ namespace Fergicide
 		private bool liveEdit;
 		private float dfaultsConfigSeed;
 
+        PhotonView PV;
+
 
         private void Awake()
         {
-			int index = Random.Range(0, 10);
-			dfaultsConfig = dfaultsConfigs[index];
+            PV = GetComponent<PhotonView>();
+			int viewID = PV.ViewID;
+			int digit = int.Parse(viewID.ToString()[0].ToString()) - 1;
 
-			Debug.Log(index);
-			Debug.Log(dfaultsConfigs[2].name);
+			Debug.Log(digit);
+			Debug.Log(viewID);
+			dfaultsConfig = dfaultsConfigs[digit];
         }
         private void Start()
 		{

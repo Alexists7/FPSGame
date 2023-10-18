@@ -47,6 +47,9 @@ public class PlayerController : MonoBehaviourPunCallbacks, IDamagable
     [SerializeField] TMP_Text totalCount;
     [SerializeField] Camera[] gunCameras;
 
+    [SerializeField]float fireRate = 0.25f;
+    float nextFireTime;
+
     void Awake()
     {
         rb = GetComponent<Rigidbody>();
@@ -58,10 +61,11 @@ public class PlayerController : MonoBehaviourPunCallbacks, IDamagable
     void Start()
     {
         Cursor.lockState = CursorLockMode.Locked;
+        nextFireTime = Time.time;
+
         if (PV.IsMine)
         {
             EquipItem(0);
-            //EquipSkin();
         }
         else
         {
@@ -94,15 +98,6 @@ public class PlayerController : MonoBehaviourPunCallbacks, IDamagable
         CheckReload();
     }
 
-    void EquipSkin()
-    {
-        DfaultsConfig[] skins = Resources.LoadAll<DfaultsConfig>("Skins");
-        var thisSkin = skins[Random.Range(0, skins.Length)];
-        DfaultsController toAssign = gameObject.GetComponent<DfaultsController>();
-
-        toAssign.dfaultsConfig = thisSkin;
-    }
-
     void CheckReload()
     {
         if (Input.GetKeyUp(KeyCode.R))
@@ -113,14 +108,37 @@ public class PlayerController : MonoBehaviourPunCallbacks, IDamagable
 
     void CheckClick()
     {
-        if (Input.GetMouseButtonUp(0))
+        if (items[itemIndex].gameObject.CompareTag("SingleShotGun"))
         {
-            if (((GunInfo)items[itemIndex].itemInfo).ammoCount != 0)
+            if (Input.GetMouseButtonDown(0))
             {
-                items[itemIndex].Use();
+                if (((GunInfo)items[itemIndex].itemInfo).ammoCount != 0)
+                {
+                    items[itemIndex].Use();
+                    Debug.Log("Mouse Button Up");
+                }
             }
         }
+
+
+        if (items[itemIndex].gameObject.CompareTag("SprayGun"))
+        {
+            if (Time.time > nextFireTime)
+            {
+                if (Input.GetMouseButton(0))
+                {
+                    if (((GunInfo)items[itemIndex].itemInfo).ammoCount != 0)
+                    {
+                        items[itemIndex].Use();
+                        Debug.Log("Spraying");
+
+                        nextFireTime = Time.time + fireRate;
+                    }
+                }
+            }
+        }      
     }
+
 
     void Look()
     {

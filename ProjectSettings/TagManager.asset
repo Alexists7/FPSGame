@@ -5,6 +5,8 @@ TagManager:
   serializedVersion: 2
   tags:
   - TitleMenu
+  - SprayGun
+  - SingleShotGun
   layers:
   - Default
   - TransparentFX
