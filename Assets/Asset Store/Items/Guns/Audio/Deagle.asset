@@ -1,0 +1,20 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7b03ef52efd840a4794f3bac25d9b98d, type: 3}
+  m_Name: Deagle
+  m_EditorClassIdentifier: 
+  Volume: 1
+  FireClips:
+  - {fileID: 8300000, guid: cda81da385018a6429b0ea224bef71e8, type: 3}
+  EmptyClip: {fileID: 8300000, guid: 19b1b490207570241a549037cf23aeaa, type: 3}
+  ReloadClip: {fileID: 8300000, guid: 7c863a9e3036e92449f81663a8447682, type: 3}
+  LastBulletClip: {fileID: 8300000, guid: cda81da385018a6429b0ea224bef71e8, type: 3}

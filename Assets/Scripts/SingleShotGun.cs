@@ -12,6 +12,8 @@ public class SingleShotGun : Gun
 
     [SerializeField] TMP_Text ammoCount;
     [SerializeField] TMP_Text totalCount;
+    [SerializeField] AudioSource shootingAudioSource;
+
     int ammoCounter;
     int totalCounter;
     int changeCounter;
@@ -34,7 +36,18 @@ public class SingleShotGun : Gun
 
     public override void Reload()
     {
-        Invoke("ReloadGun", 1f);
+        if(((GunInfo)itemInfo).ammoCount == ((GunInfo)itemInfo).magCapacity)
+        {
+            return;
+        }
+
+        if(((GunInfo)itemInfo).totalCount == 0)
+        {
+            return;
+        }
+
+        audioConfig.PlayReloadClip(shootingAudioSource);
+        Invoke("ReloadGun", 2f);
     }
 
     void ReloadGun()
@@ -42,12 +55,8 @@ public class SingleShotGun : Gun
         int.TryParse(ammoCount.text, out ammoCounter);
         int.TryParse(totalCount.text, out totalCounter);
 
-        if (ammoCounter == ((GunInfo)itemInfo).magCapacity)
-        {
-            return;
-        }
-        else if (ammoCounter > 0)
-        {
+        if (ammoCounter > 0)
+        {        
             //if totalCount is less than magCapacity, then we cannot reload fully, so reload what we have left
             if (totalCounter < ((GunInfo)itemInfo).magCapacity)
             {
@@ -103,6 +112,11 @@ public class SingleShotGun : Gun
         }
     }
 
+    public override void OutOfAmmo()
+    {
+        audioConfig.PlayOutOfAmmoClip(shootingAudioSource);
+    }
+
     void Shoot()
     {
         int.TryParse(ammoCount.text, out ammoCounter);
@@ -122,10 +136,12 @@ public class SingleShotGun : Gun
 
         if (Physics.Raycast(ray, out RaycastHit hit))
         {
+            audioConfig.PlayShootingClip(shootingAudioSource, ((GunInfo)itemInfo).ammoCount == 1);
             hit.collider.gameObject.GetComponent<IDamagable>()?.TakeDamage(((GunInfo)itemInfo).damage);
             PV.RPC(nameof(RPC_Shoot), RpcTarget.All, hit.point, hit.normal);
         }
     }
+
 
     [PunRPC]
     void RPC_Shoot(Vector3 hitPosition, Vector3 hitNormal)

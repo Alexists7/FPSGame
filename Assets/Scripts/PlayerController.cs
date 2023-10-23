@@ -47,9 +47,11 @@ public class PlayerController : MonoBehaviourPunCallbacks, IDamagable
     [SerializeField] TMP_Text totalCount;
     [SerializeField] Camera[] gunCameras;
 
-    [SerializeField]float fireRate = 0.25f;
-    float nextFireTime;
+    [SerializeField] float fireRate = 0.25f;
+    [SerializeField] float pistolFireRate = 1f;
 
+    float nextFireTime;
+    float pistolNextFireTime;
     void Awake()
     {
         rb = GetComponent<Rigidbody>();
@@ -62,6 +64,7 @@ public class PlayerController : MonoBehaviourPunCallbacks, IDamagable
     {
         Cursor.lockState = CursorLockMode.Locked;
         nextFireTime = Time.time;
+        pistolNextFireTime = Time.time;
 
         if (PV.IsMine)
         {
@@ -110,14 +113,23 @@ public class PlayerController : MonoBehaviourPunCallbacks, IDamagable
     {
         if (items[itemIndex].gameObject.CompareTag("SingleShotGun"))
         {
-            if (Input.GetMouseButtonDown(0))
+            if (Time.time > pistolNextFireTime)
             {
-                if (((GunInfo)items[itemIndex].itemInfo).ammoCount != 0)
+                if (Input.GetMouseButtonDown(0))
                 {
-                    items[itemIndex].Use();
-                    Debug.Log("Mouse Button Up");
+                    if (((GunInfo)items[itemIndex].itemInfo).ammoCount > 0)
+                    {
+                        items[itemIndex].Use();
+
+                        pistolNextFireTime = Time.time + pistolFireRate;
+                    }
                 }
-            }
+
+                if (Input.GetMouseButtonUp(0) && ((GunInfo)items[itemIndex].itemInfo).ammoCount == 0)
+                {
+                    items[itemIndex].OutOfAmmo();
+                }
+            }   
         }
 
 
@@ -127,13 +139,18 @@ public class PlayerController : MonoBehaviourPunCallbacks, IDamagable
             {
                 if (Input.GetMouseButton(0))
                 {
-                    if (((GunInfo)items[itemIndex].itemInfo).ammoCount != 0)
+                    if (((GunInfo)items[itemIndex].itemInfo).ammoCount > 0)
                     {
                         items[itemIndex].Use();
                         Debug.Log("Spraying");
 
                         nextFireTime = Time.time + fireRate;
                     }
+                }
+
+                if(Input.GetMouseButtonDown(0) && ((GunInfo)items[itemIndex].itemInfo).ammoCount == 0)
+                {
+                    items[itemIndex].OutOfAmmo();
                 }
             }
         }      
@@ -223,8 +240,6 @@ public class PlayerController : MonoBehaviourPunCallbacks, IDamagable
 
         itemIndex = _index;
 
-        Camera camera = items[itemIndex].itemGameObject.GetComponentInChildren<Camera>();
-
         ammoCount.text = ((GunInfo)items[itemIndex].itemInfo).ammoCount.ToString();
         totalCount.text = ((GunInfo)items[itemIndex].itemInfo).totalCount.ToString();
 
@@ -242,6 +257,11 @@ public class PlayerController : MonoBehaviourPunCallbacks, IDamagable
             Hashtable hash = new Hashtable();
             hash.Add("itemIndex", itemIndex);
             PhotonNetwork.LocalPlayer.SetCustomProperties(hash);
+        }
+        else
+        {
+            Camera camera = items[itemIndex].itemGameObject.GetComponentInChildren<Camera>();
+            camera.gameObject.SetActive(false);
         }
     }
 
