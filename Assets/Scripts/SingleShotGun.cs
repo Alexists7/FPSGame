@@ -22,8 +22,8 @@ public class SingleShotGun : Gun
     {
         PV = GetComponent<PhotonView>();
 
-        ((GunInfo)itemInfo).totalCount = ((GunInfo)itemInfo).totalCapacity;
-        ((GunInfo)itemInfo).ammoCount = ((GunInfo)itemInfo).magCapacity;
+        //((GunInfo)itemInfo).totalCount = ((GunInfo)itemInfo).totalCapacity;
+        //((GunInfo)itemInfo).ammoCount = ((GunInfo)itemInfo).magCapacity;
 
         ammoCount.text = ((GunInfo)itemInfo).ammoCount.ToString();
         totalCount.text = ((GunInfo)itemInfo).totalCount.ToString();

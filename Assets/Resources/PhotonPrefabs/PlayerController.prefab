@@ -494,7 +494,6 @@ MonoBehaviour:
   itemGameObject: {fileID: 5861462384529862540}
   audioConfig: {fileID: 11400000, guid: 819ed40d2a0ddb14cbe9238eab36d0f6, type: 2}
   bulletImpactPrefab: {fileID: 6832898305875057566, guid: 9bc88e2047dabf54190b4bac8f4407c8, type: 3}
-  stopTime: 0.13
   cam: {fileID: 1709641806258163012}
   ammoCount: {fileID: 8631963585959104353}
   totalCount: {fileID: 1762422459685382064}
@@ -2099,7 +2098,6 @@ MonoBehaviour:
   itemGameObject: {fileID: 2346720898755549448}
   audioConfig: {fileID: 11400000, guid: 5a33b6da3fd7ab141a78cbe27a8cce77, type: 2}
   bulletImpactPrefab: {fileID: 6832898305875057566, guid: 9bc88e2047dabf54190b4bac8f4407c8, type: 3}
-  stopTime: 1.5
   cam: {fileID: 1709641806258163012}
   ammoCount: {fileID: 8631963585959104353}
   totalCount: {fileID: 1762422459685382064}

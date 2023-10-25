@@ -16,7 +16,9 @@ public class PlayerManager : MonoBehaviour
 
     int kills;
     int deaths;
-    
+    string deadPlayerName;
+
+    KillFeedManager killFeedScript;
 
     void Awake()
     {
@@ -29,6 +31,8 @@ public class PlayerManager : MonoBehaviour
         {
             CreateController();
         }
+
+        killFeedScript = GameObject.Find("KillFeedManager").GetComponent<KillFeedManager>();
     }
 
     void CreateController()
@@ -57,26 +61,33 @@ public class PlayerManager : MonoBehaviour
         return spawnpoints[randNum];
     }
 
-    public void Die()
+    public void Die(int itemIndex, string killer)
     {
         PhotonNetwork.Destroy(controller);
         CreateController();
+
+        Debug.Log("Killed with item: " + itemIndex);
+        killFeedScript.KillFeedShown(0, killer, PhotonNetwork.LocalPlayer.NickName);
 
         deaths++;
         Hashtable hash = new Hashtable();
         hash.Add("deaths", deaths);
         PhotonNetwork.LocalPlayer.SetCustomProperties(hash);
+
+        SetDeadPlayerName(PhotonNetwork.LocalPlayer.NickName);
+        Debug.Log("Setting dead player name as: " + PhotonNetwork.LocalPlayer.NickName);
     }
 
-    public void GetKill()
+    public void GetKill(string killedPlayer)
     {
-        PV.RPC(nameof(RPC_GetKill), PV.Owner);
+        PV.RPC(nameof(RPC_GetKill), PV.Owner, killedPlayer);
     }
 
     [PunRPC]
-    void RPC_GetKill()
+    void RPC_GetKill(string killedPlayer)
     {
         kills++;
+        killFeedScript.KillFeedShown(0, PhotonNetwork.LocalPlayer.NickName, killedPlayer);     
 
         Hashtable hash = new Hashtable();
         hash.Add("kills", kills);
@@ -86,5 +97,10 @@ public class PlayerManager : MonoBehaviour
     public static PlayerManager Find(Player player)
     {
         return FindObjectsOfType<PlayerManager>().SingleOrDefault(x => x.PV.Owner == player);
+    }
+
+    void SetDeadPlayerName(string name)
+    {
+        deadPlayerName = name;
     }
 }

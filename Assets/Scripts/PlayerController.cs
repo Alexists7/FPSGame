@@ -52,6 +52,7 @@ public class PlayerController : MonoBehaviourPunCallbacks, IDamagable
 
     float nextFireTime;
     float pistolNextFireTime;
+    string myName;
     void Awake()
     {
         rb = GetComponent<Rigidbody>();
@@ -69,6 +70,8 @@ public class PlayerController : MonoBehaviourPunCallbacks, IDamagable
         if (PV.IsMine)
         {
             EquipItem(0);
+            myName = PV.Owner.NickName;
+            Debug.Log("My name: " + myName);
         }
         else
         {
@@ -284,7 +287,6 @@ public class PlayerController : MonoBehaviourPunCallbacks, IDamagable
     public void TakeDamage(float damage)
     {
         PV.RPC(nameof(RPC_TakeDamage), PV.Owner, damage);
-        Debug.Log(PV.Owner.NickName + "Took damage: " + damage);
     }
 
     [PunRPC]
@@ -296,13 +298,15 @@ public class PlayerController : MonoBehaviourPunCallbacks, IDamagable
 
         if (currentHealth <= 0)
         {
-            Die();
-            PlayerManager.Find(info.Sender).GetKill();
+            //you die sending the killers name with you
+            Die(itemIndex,info.Sender.NickName);
+            //the killer gets a kill, sending who they killed
+            PlayerManager.Find(info.Sender).GetKill(myName);
         }
     }
 
-    void Die()
+    void Die(int index, string killer)
     {
-        playerManager.Die();
+        playerManager.Die(index, killer);
     }
 }
