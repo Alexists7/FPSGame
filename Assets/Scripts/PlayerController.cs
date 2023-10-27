@@ -13,7 +13,7 @@ public class PlayerController : MonoBehaviourPunCallbacks, IDamagable
 {
     //Variables Linked to Movement
     [SerializeField] GameObject cameraHolder;
-    [SerializeField] float speed = 12f, gravity = -9.81f, jumpHeight = 2f, groundDistance = 0.4f, mouseSensitivity = 100f;
+    [SerializeField] float speed = 12f, gravity = -9.81f, jumpHeight = 2f, groundDistance = 0.4f, mouseSensitivity = 4f;
 
     [SerializeField] CharacterController controller;
 
@@ -308,5 +308,15 @@ public class PlayerController : MonoBehaviourPunCallbacks, IDamagable
     void Die(int index, string killer)
     {
         playerManager.Die(index, killer);
+    }
+
+    public float GetMouseSensitivity()
+    {
+        return mouseSensitivity;
+    }
+
+    public void SetMouseSensitivity(float mouseSens)
+    {
+        mouseSensitivity = mouseSens;
     }
 }

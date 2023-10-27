@@ -31,7 +31,10 @@ public class SingleShotGun : Gun
 
     public override void Use()
     {
-        Shoot();
+        if(Cursor.lockState == CursorLockMode.Locked)
+        {
+            Shoot();
+        }
     }
 
     public override void Reload()

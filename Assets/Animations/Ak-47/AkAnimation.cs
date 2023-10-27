@@ -17,29 +17,32 @@ public class AkAnimation : MonoBehaviour
 
     void Update()
     {
-        if (PV.IsMine)
+        if(Cursor.lockState == CursorLockMode.Locked)
         {
-            if (((GunInfo)itemInfo).ammoCount > 0)
+            if (PV.IsMine)
             {
-                if (Input.GetMouseButton(0))
+                if (((GunInfo)itemInfo).ammoCount > 0)
                 {
-                    animator.SetBool("Shoot", true);
-                    Invoke("SetBoolBack", 0.2f);
+                    if (Input.GetMouseButton(0))
+                    {
+                        animator.SetBool("Shoot", true);
+                        Invoke("SetBoolBack", 0.2f);
+                    }
+                }
+
+                if (Input.GetKeyDown(KeyCode.Y))
+                {
+                    animator.SetTrigger("Inspect");
+                }
+
+                if ((((GunInfo)itemInfo).ammoCount != ((GunInfo)itemInfo).magCapacity) &&
+                    Input.GetKeyDown(KeyCode.R) && ((GunInfo)itemInfo).totalCount != 0)
+                {
+                    animator.SetBool("Reload", true);
+                    Invoke("SetRelBoolBack", 2f);
                 }
             }
-
-            if (Input.GetKeyDown(KeyCode.Y))
-            {
-                animator.SetTrigger("Inspect");
-            }
-
-            if((((GunInfo)itemInfo).ammoCount != ((GunInfo)itemInfo).magCapacity) &&
-                Input.GetKeyDown(KeyCode.R) && ((GunInfo)itemInfo).totalCount != 0)
-            {
-                animator.SetBool("Reload", true);
-                Invoke("SetRelBoolBack", 2f);
-            }
-        } 
+        }
     }
 
     void SetBoolBack()
