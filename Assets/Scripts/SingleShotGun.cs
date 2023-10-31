@@ -13,6 +13,7 @@ public class SingleShotGun : Gun
     [SerializeField] TMP_Text ammoCount;
     [SerializeField] TMP_Text totalCount;
     [SerializeField] AudioSource shootingAudioSource;
+    [SerializeField] ParticleSystem system;
 
     int ammoCounter;
     int totalCounter;
@@ -142,6 +143,7 @@ public class SingleShotGun : Gun
             audioConfig.PlayShootingClip(shootingAudioSource, ((GunInfo)itemInfo).ammoCount == 1);
             hit.collider.gameObject.GetComponent<IDamagable>()?.TakeDamage(((GunInfo)itemInfo).damage);
             PV.RPC(nameof(RPC_Shoot), RpcTarget.All, hit.point, hit.normal);
+            system.Play();
         }
     }
 
