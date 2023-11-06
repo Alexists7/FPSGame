@@ -14,6 +14,7 @@ public class SingleShotGun : Gun
     [SerializeField] TMP_Text totalCount;
     [SerializeField] AudioSource shootingAudioSource;
     [SerializeField] ParticleSystem system;
+    [SerializeField] AudioSource playerHitSource;
 
     int ammoCounter;
     int totalCounter;
@@ -23,8 +24,8 @@ public class SingleShotGun : Gun
     {
         PV = GetComponent<PhotonView>();
 
-        //((GunInfo)itemInfo).totalCount = ((GunInfo)itemInfo).totalCapacity;
-        //((GunInfo)itemInfo).ammoCount = ((GunInfo)itemInfo).magCapacity;
+        ((GunInfo)itemInfo).totalCount = ((GunInfo)itemInfo).totalCapacity;
+        ((GunInfo)itemInfo).ammoCount = ((GunInfo)itemInfo).magCapacity;
 
         ammoCount.text = ((GunInfo)itemInfo).ammoCount.ToString();
         totalCount.text = ((GunInfo)itemInfo).totalCount.ToString();
@@ -142,6 +143,9 @@ public class SingleShotGun : Gun
         {
             audioConfig.PlayShootingClip(shootingAudioSource, ((GunInfo)itemInfo).ammoCount == 1);
             hit.collider.gameObject.GetComponent<IDamagable>()?.TakeDamage(((GunInfo)itemInfo).damage);
+
+            hit.collider.gameObject.GetComponent<IDamagable>()?.PlayShotClip(playerHitSource);
+
             PV.RPC(nameof(RPC_Shoot), RpcTarget.All, hit.point, hit.normal);
             system.Play();
         }

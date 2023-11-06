@@ -6,17 +6,14 @@ using UnityEngine.UI;
 
 public class KillFeedManager : MonoBehaviour
 {
-    public GameObject killFeed;
-    public Transform spawn;
+    [SerializeField] GameObject killFeed;
+    [SerializeField] Transform spawn;
 
-    string playerName;
-    string enemyName;
-
-    public Sprite[] deathTypes;
+    [SerializeField] Sprite[] deathTypes;
 
     public void KillFeedShown(int deathType, string killer, string enemy)
     {
-        GameObject kill = Instantiate(killFeed, spawn.position, spawn.rotation);
+        GameObject kill = Instantiate(killFeed, spawn);
         kill.transform.SetParent(spawn);
 
         TMP_Text playerName;

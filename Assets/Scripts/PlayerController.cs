@@ -25,7 +25,7 @@ public class PlayerController : MonoBehaviourPunCallbacks, IDamagable
     float verticalLookRotation;
 
     //Variables Linked to Gun and More
-    [SerializeField] Gun[] items;
+    [SerializeField] Item[] items;
 
     int itemIndex;
     int previousItemIndex = -1;
@@ -53,6 +53,9 @@ public class PlayerController : MonoBehaviourPunCallbacks, IDamagable
     float nextFireTime;
     float pistolNextFireTime;
     string myName;
+
+    [SerializeField] PlayAudioEffect hitEffect;
+
     void Awake()
     {
         rb = GetComponent<Rigidbody>();
@@ -108,7 +111,13 @@ public class PlayerController : MonoBehaviourPunCallbacks, IDamagable
     {
         if (Input.GetKeyUp(KeyCode.R))
         {
-            items[itemIndex].Reload();
+            if (Input.GetKeyUp(KeyCode.R))
+            {
+                if (items[itemIndex] is Gun gun)
+                {
+                    gun.Reload();
+                }
+            }
         }
     }
 
@@ -130,7 +139,10 @@ public class PlayerController : MonoBehaviourPunCallbacks, IDamagable
 
                 if (Input.GetMouseButtonUp(0) && ((GunInfo)items[itemIndex].itemInfo).ammoCount == 0)
                 {
-                    items[itemIndex].OutOfAmmo();
+                    if (items[itemIndex] is Gun gun)
+                    {
+                        gun.OutOfAmmo();
+                    }
                 }
             }   
         }
@@ -153,7 +165,10 @@ public class PlayerController : MonoBehaviourPunCallbacks, IDamagable
 
                 if(Input.GetMouseButtonDown(0) && ((GunInfo)items[itemIndex].itemInfo).ammoCount == 0)
                 {
-                    items[itemIndex].OutOfAmmo();
+                    if (items[itemIndex] is Gun gun)
+                    {
+                        gun.OutOfAmmo();
+                    }
                 }
             }
         }      
@@ -261,11 +276,6 @@ public class PlayerController : MonoBehaviourPunCallbacks, IDamagable
             hash.Add("itemIndex", itemIndex);
             PhotonNetwork.LocalPlayer.SetCustomProperties(hash);
         }
-        else
-        {
-            Camera camera = items[itemIndex].itemGameObject.GetComponentInChildren<Camera>();
-            camera.gameObject.SetActive(false);
-        }
     }
 
     public override void OnPlayerPropertiesUpdate(Player targetPlayer, Hashtable changedProps)
@@ -287,6 +297,12 @@ public class PlayerController : MonoBehaviourPunCallbacks, IDamagable
     public void TakeDamage(float damage)
     {
         PV.RPC(nameof(RPC_TakeDamage), PV.Owner, damage);
+        Debug.Log("Sending index: " + itemIndex + " as weapon.");
+    }
+
+    public void PlayShotClip(AudioSource audioSource)
+    {
+        hitEffect.PlayShotClip(audioSource);
     }
 
     [PunRPC]
@@ -298,10 +314,11 @@ public class PlayerController : MonoBehaviourPunCallbacks, IDamagable
 
         if (currentHealth <= 0)
         {
+            int gunUsedIndex = (int)info.Sender.CustomProperties["itemIndex"];
             //you die sending the killers name with you
-            Die(itemIndex,info.Sender.NickName);
+            Die(gunUsedIndex,info.Sender.NickName);
             //the killer gets a kill, sending who they killed
-            PlayerManager.Find(info.Sender).GetKill(myName);
+            PlayerManager.Find(info.Sender).GetKill(myName, gunUsedIndex);
         }
     }
 

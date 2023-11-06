@@ -66,8 +66,8 @@ public class PlayerManager : MonoBehaviour
         PhotonNetwork.Destroy(controller);
         CreateController();
 
-        Debug.Log("Killed with item: " + itemIndex);
-        killFeedScript.KillFeedShown(0, killer, PhotonNetwork.LocalPlayer.NickName);
+        //Debug.Log("Killed with item: " + itemIndex);
+        killFeedScript.KillFeedShown(itemIndex, killer, PhotonNetwork.LocalPlayer.NickName);
 
         deaths++;
         Hashtable hash = new Hashtable();
@@ -75,19 +75,19 @@ public class PlayerManager : MonoBehaviour
         PhotonNetwork.LocalPlayer.SetCustomProperties(hash);
 
         SetDeadPlayerName(PhotonNetwork.LocalPlayer.NickName);
-        Debug.Log("Setting dead player name as: " + PhotonNetwork.LocalPlayer.NickName);
     }
 
-    public void GetKill(string killedPlayer)
+    public void GetKill(string killedPlayer, int itemIndex)
     {
-        PV.RPC(nameof(RPC_GetKill), PV.Owner, killedPlayer);
+        PV.RPC(nameof(RPC_GetKill), PV.Owner, killedPlayer, itemIndex);  
     }
 
     [PunRPC]
-    void RPC_GetKill(string killedPlayer)
+    void RPC_GetKill(string killedPlayer, int itemIndex)
     {
         kills++;
-        killFeedScript.KillFeedShown(0, PhotonNetwork.LocalPlayer.NickName, killedPlayer);     
+        //Debug.Log("Used item to get the kill: " + itemIndex);
+        killFeedScript.KillFeedShown(itemIndex, PhotonNetwork.LocalPlayer.NickName, killedPlayer);     
 
         Hashtable hash = new Hashtable();
         hash.Add("kills", kills);

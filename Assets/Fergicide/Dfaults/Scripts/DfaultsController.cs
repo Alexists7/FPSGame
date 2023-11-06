@@ -53,8 +53,6 @@ namespace Fergicide
 			int viewID = PV.ViewID;
 			int digit = int.Parse(viewID.ToString()[0].ToString()) - 1;
 
-			Debug.Log(digit);
-			Debug.Log(viewID);
 			dfaultsConfig = dfaultsConfigs[digit];
         }
         private void Start()
