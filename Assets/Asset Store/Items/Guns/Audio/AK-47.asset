@@ -12,9 +12,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7b03ef52efd840a4794f3bac25d9b98d, type: 3}
   m_Name: AK-47
   m_EditorClassIdentifier: 
-  Volume: 0.175
+  Volume: 0.15
   FireClips:
   - {fileID: 8300000, guid: 7bf3312aea6abc240a851237de0f156c, type: 3}
   EmptyClip: {fileID: 8300000, guid: 1d9501b12fbe21b4990c9041894d1fcd, type: 3}
   ReloadClip: {fileID: 8300000, guid: 5e53cabe0e667e9439d0d633e7d32230, type: 3}
   LastBulletClip: {fileID: 8300000, guid: 7bf3312aea6abc240a851237de0f156c, type: 3}
+  leftClick: {fileID: 0}
+  rightClick: {fileID: 0}

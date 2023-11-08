@@ -8,6 +8,7 @@ using Unity.VisualScripting;
 using UnityEngine.UI;
 using TMPro;
 using Fergicide;
+using System;
 
 public class PlayerController : MonoBehaviourPunCallbacks, IDamagable
 {
@@ -44,6 +45,7 @@ public class PlayerController : MonoBehaviourPunCallbacks, IDamagable
     [SerializeField] GameObject ui;
 
     [SerializeField] TMP_Text ammoCount;
+    [SerializeField] TMP_Text slash;
     [SerializeField] TMP_Text totalCount;
     [SerializeField] Camera[] gunCameras;
 
@@ -55,7 +57,7 @@ public class PlayerController : MonoBehaviourPunCallbacks, IDamagable
     string myName;
 
     [SerializeField] PlayAudioEffect hitEffect;
-
+    [SerializeField] Image[] icons;
     void Awake()
     {
         rb = GetComponent<Rigidbody>();
@@ -123,6 +125,19 @@ public class PlayerController : MonoBehaviourPunCallbacks, IDamagable
 
     void CheckClick()
     {
+        if (items[itemIndex].gameObject.CompareTag("Knife"))
+        {
+            if (Input.GetMouseButtonDown(0))
+            {
+                items[itemIndex].Use();
+            }
+
+            if (Input.GetMouseButtonDown(1))
+            {
+                items[itemIndex].Use();
+            }
+        }
+
         if (items[itemIndex].gameObject.CompareTag("SingleShotGun"))
         {
             if (Time.time > pistolNextFireTime)
@@ -258,8 +273,35 @@ public class PlayerController : MonoBehaviourPunCallbacks, IDamagable
 
         itemIndex = _index;
 
-        ammoCount.text = ((GunInfo)items[itemIndex].itemInfo).ammoCount.ToString();
-        totalCount.text = ((GunInfo)items[itemIndex].itemInfo).totalCount.ToString();
+        if (PV.IsMine)
+        {
+            if (itemIndex >= 0 && itemIndex < icons.Length)
+            {
+                // Deactivate all icons
+                for (int i = 0; i < icons.Length; i++)
+                {
+                    icons[i].gameObject.SetActive(false);
+                }
+
+                // Activate the selected icon
+                icons[itemIndex].gameObject.SetActive(true);
+            }
+        }
+
+        if (itemIndex == 0 || itemIndex == 1)
+        {
+            //change ammo count if gun is switched
+            ammoCount.text = ((GunInfo)items[itemIndex].itemInfo).ammoCount.ToString();
+            totalCount.text = ((GunInfo)items[itemIndex].itemInfo).totalCount.ToString();
+            slash.text = "/";
+        }
+        else
+        {
+            ammoCount.text = "";
+            totalCount.text = "";
+            slash.text = "";
+        }
+        
 
         items[itemIndex].itemGameObject.SetActive(true);
 
@@ -297,7 +339,6 @@ public class PlayerController : MonoBehaviourPunCallbacks, IDamagable
     public void TakeDamage(float damage)
     {
         PV.RPC(nameof(RPC_TakeDamage), PV.Owner, damage);
-        Debug.Log("Sending index: " + itemIndex + " as weapon.");
     }
 
     public void PlayShotClip(AudioSource audioSource)

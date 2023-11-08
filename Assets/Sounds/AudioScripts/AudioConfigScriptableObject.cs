@@ -11,6 +11,9 @@ public class AudioConfigScriptableObject : ScriptableObject
     public AudioClip EmptyClip;
     public AudioClip ReloadClip;
     public AudioClip LastBulletClip;
+    public AudioClip leftClick;
+    public AudioClip rightClick;
+
 
     public void PlayShootingClip(AudioSource AudioSource, bool IsLastBullet = false)
     {
@@ -38,5 +41,15 @@ public class AudioConfigScriptableObject : ScriptableObject
         {
             AudioSource.PlayOneShot(ReloadClip, Volume);
         }
+    }
+
+    public void PlayLeftClickClip(AudioSource AudioSource)
+    {
+        AudioSource.PlayOneShot(leftClick, Volume);
+    }
+
+    public void PlayRightClickClip(AudioSource AudioSource)
+    {
+        AudioSource.PlayOneShot(rightClick, Volume);
     }
 }

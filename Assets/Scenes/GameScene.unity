@@ -10788,6 +10788,7 @@ MonoBehaviour:
   deathTypes:
   - {fileID: 21300044, guid: 5acb27b603af6d44ea6113c4b7b15385, type: 3}
   - {fileID: 21300022, guid: 5acb27b603af6d44ea6113c4b7b15385, type: 3}
+  - {fileID: 21300000, guid: bb7e4326062e6d041a141c5ee367950e, type: 3}
 --- !u!4 &1774730724
 Transform:
   m_ObjectHideFlags: 0
