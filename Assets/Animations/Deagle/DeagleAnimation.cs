@@ -24,8 +24,7 @@ public class DeagleAnimation : MonoBehaviour
                 {
                     if (Input.GetMouseButtonDown(0))
                     {
-                        animator.SetBool("Shoot", true);
-                        Invoke("SetBoolBack", 0.75f);
+                        animator.SetTrigger("Shoot");
                     }
                 }
 
@@ -42,11 +41,6 @@ public class DeagleAnimation : MonoBehaviour
                 }
             }
         }  
-    }
-
-    void SetBoolBack()
-    {
-        animator.SetBool("Shoot", false);
     }
 
     void SetRelBoolBack()

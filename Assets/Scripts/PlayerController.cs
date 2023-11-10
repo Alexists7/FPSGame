@@ -50,10 +50,8 @@ public class PlayerController : MonoBehaviourPunCallbacks, IDamagable
     [SerializeField] Camera[] gunCameras;
 
     [SerializeField] float fireRate = 0.25f;
-    [SerializeField] float pistolFireRate = 1f;
 
     float nextFireTime;
-    float pistolNextFireTime;
     string myName;
 
     [SerializeField] PlayAudioEffect hitEffect;
@@ -70,7 +68,6 @@ public class PlayerController : MonoBehaviourPunCallbacks, IDamagable
     {
         Cursor.lockState = CursorLockMode.Locked;
         nextFireTime = Time.time;
-        pistolNextFireTime = Time.time;
 
         if (PV.IsMine)
         {
@@ -99,14 +96,17 @@ public class PlayerController : MonoBehaviourPunCallbacks, IDamagable
             return;
         }
 
-        MoveAndJump();
-        Look();
+        if(Cursor.lockState == CursorLockMode.Locked)
+        {
+            MoveAndJump();
+            Look();
 
-        EquipItemWithKeypad();
-        EquipItemWithScrollWheel();
+            EquipItemWithKeypad();
+            EquipItemWithScrollWheel();
 
-        CheckClick();
-        CheckReload();
+            CheckClick();
+            CheckReload();
+        }    
     }
 
     void CheckReload()
@@ -140,26 +140,21 @@ public class PlayerController : MonoBehaviourPunCallbacks, IDamagable
 
         if (items[itemIndex].gameObject.CompareTag("SingleShotGun"))
         {
-            if (Time.time > pistolNextFireTime)
+            if (Input.GetMouseButtonDown(0))
             {
-                if (Input.GetMouseButtonDown(0))
+                if (((GunInfo)items[itemIndex].itemInfo).ammoCount > 0)
                 {
-                    if (((GunInfo)items[itemIndex].itemInfo).ammoCount > 0)
-                    {
-                        items[itemIndex].Use();
-
-                        pistolNextFireTime = Time.time + pistolFireRate;
-                    }
+                    items[itemIndex].Use();
                 }
+            }
 
-                if (Input.GetMouseButtonUp(0) && ((GunInfo)items[itemIndex].itemInfo).ammoCount == 0)
+            if (Input.GetMouseButtonUp(0) && ((GunInfo)items[itemIndex].itemInfo).ammoCount == 0)
+            {
+                if (items[itemIndex] is Gun gun)
                 {
-                    if (items[itemIndex] is Gun gun)
-                    {
-                        gun.OutOfAmmo();
-                    }
+                    gun.OutOfAmmo();
                 }
-            }   
+            }
         }
 
 

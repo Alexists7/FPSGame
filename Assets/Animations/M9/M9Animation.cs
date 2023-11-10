@@ -18,8 +18,9 @@ public class M9Animation : MonoBehaviour
         {
             if (PV.IsMine)
             {
-                if (Input.GetMouseButton(0))
+                if (Input.GetMouseButtonDown(0))
                 {
+                    Debug.Log("LeftClick");
                     animator.SetTrigger("LeftClick");
                 }
 
@@ -29,7 +30,7 @@ public class M9Animation : MonoBehaviour
                 }
 
 
-                if (Input.GetMouseButton(1))
+                if (Input.GetMouseButtonDown(1))
                 {
                     animator.SetTrigger("RightClick");
                 }
